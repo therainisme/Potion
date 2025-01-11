@@ -32,7 +32,7 @@ func handleRootPath(w http.ResponseWriter, r *http.Request) {
 	host := r.Host
 
 	redirectURL := fmt.Sprintf("%s://%s/%s", scheme, host, config.SiteSlug)
-	logInfo("Redirecting to blog: %s", redirectURL)
+	logDebug("Redirecting to blog: %s", redirectURL)
 	http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)
 }
 
