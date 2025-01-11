@@ -15,12 +15,14 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/")
 	logDebug("Method: %s, URL: %s", r.Method, r.URL)
 
-	if path == "" {
+	switch path {
+	case "":
 		handleRootPath(w, r)
-		return
+	case "sitemap.xml":
+		handleSitemap(w, r)
+	default:
+		proxyRequest(w, r, path)
 	}
-
-	proxyRequest(w, r, path)
 }
 
 // handleRootPath handles the root path and redirects to the blog

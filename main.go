@@ -15,6 +15,7 @@ type Config struct {
 	SiteSlug        string
 	PageTitle       string
 	PageDescription string
+	SitemapID       string
 }
 
 var (
@@ -53,6 +54,7 @@ func init() {
 		SiteSlug:        os.Getenv("SITE_SLUG"),
 		PageTitle:       os.Getenv("PAGE_TITLE"),
 		PageDescription: os.Getenv("PAGE_DESCRIPTION"),
+		SitemapID:       os.Getenv("SITEMAP_ID"),
 	}
 
 	// Log configuration
@@ -62,6 +64,7 @@ func init() {
 	logInfo("  Site Slug: %s", config.SiteSlug)
 	logInfo("  Page Title: %s", config.PageTitle)
 	logInfo("  Page Description: %s", config.PageDescription)
+	logInfo("  Sitemap ID: %s", config.SitemapID)
 }
 
 func main() {

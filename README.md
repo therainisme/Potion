@@ -1,9 +1,10 @@
 # Potion
 
-A lightweight proxy tool for customizing Notion pages, allowing you to:
+A lightweight proxy tool for customizing Notion pages, making your Notion blog more SEO-friendly and customizable. With Potion, you can:
 
 1. Access Notion pages through your own server, with support for custom domains
 2. Customize page title and description
+3. Support sitemap.xml
 
 ## Quick Start
 
@@ -20,8 +21,9 @@ cd potion
 PORT=8080
 SITE_DOMAIN=https://your-blog.notion.site
 SITE_SLUG=your-page-slug
-PAGE_TITLE=Your Custom Title
-PAGE_DESCRIPTION=Your Custom Description
+PAGE_TITLE=Your custom title
+SITEMAP_ID=Your blog database id
+PAGE_DESCRIPTION=Your custom description
 ```
 
 3. Run:
@@ -43,8 +45,9 @@ services:
       - PORT=8080
       - SITE_DOMAIN=https://your-blog.notion.site
       - SITE_SLUG=your-page-slug
-      - PAGE_TITLE=Your Custom Title
-      - PAGE_DESCRIPTION=Your Custom Description
+      - PAGE_TITLE=Your custom title
+      - SITEMAP_ID=Your blog database id
+      - PAGE_DESCRIPTION=Your custom description
     # Or use .env file
     # volumes:
     #   - .env:/app/.env
@@ -65,8 +68,9 @@ docker run -d \
   -p 8080:8080 \
   -e SITE_DOMAIN=https://your-blog.notion.site \
   -e SITE_SLUG=your-page-slug \
-  -e PAGE_TITLE="Your Custom Title" \
-  -e PAGE_DESCRIPTION="Your Custom Description" \
+  -e PAGE_TITLE="Your custom title" \
+  -e SITEMAP_ID="Your blog database id" \
+  -e PAGE_DESCRIPTION="Your custom description" \
   therainisme/potion
 
 # Or run with .env file
@@ -89,5 +93,6 @@ Visit my blog to see Potion in action: https://blog.therainisme.com
 | SITE_DOMAIN | Your Notion site domain | https://your-blog.notion.site |
 | SITE_SLUG | Page slug | your-page-slug |
 | PAGE_TITLE | Custom page title | My Blog |
+| SITEMAP_ID (optional) | Your blog database id | xxxxxxxxx |
 | PAGE_DESCRIPTION | Custom page description | Welcome to my blog |
 
