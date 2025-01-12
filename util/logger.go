@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"log"
@@ -9,7 +9,7 @@ var logLevel = "INFO" // Default to INFO level
 
 func init() {
 	// Set log flags to include timestamp and file location
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetFlags(log.LstdFlags)
 
 	// Optionally read from environment variable
 	if level := os.Getenv("LOG_LEVEL"); level != "" {
@@ -17,18 +17,18 @@ func init() {
 	}
 }
 
-func logDebug(format string, v ...interface{}) {
+func LogDebug(format string, v ...interface{}) {
 	if logLevel == "DEBUG" {
 		log.Printf("[DEBUG] "+format, v...)
 	}
 }
 
-func logInfo(format string, v ...interface{}) {
+func LogInfo(format string, v ...interface{}) {
 	if logLevel == "DEBUG" || logLevel == "INFO" {
 		log.Printf("[INFO] "+format, v...)
 	}
 }
 
-func logError(format string, v ...interface{}) {
+func LogError(format string, v ...interface{}) {
 	log.Printf("[ERROR] "+format, v...)
 }

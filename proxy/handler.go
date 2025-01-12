@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"bytes"
@@ -9,11 +9,13 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/therainisme/potion/util"
 )
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
+func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	path := strings.TrimPrefix(r.URL.Path, "/")
-	logDebug("Method: %s, URL: %s", r.Method, r.URL)
+	util.LogDebug("Method: %s, URL: %s", r.Method, r.URL)
 
 	switch path {
 	case "":
@@ -33,8 +35,8 @@ func handleRootPath(w http.ResponseWriter, r *http.Request) {
 	}
 	host := r.Host
 
-	redirectURL := fmt.Sprintf("%s://%s/%s", scheme, host, config.SiteSlug)
-	logDebug("Redirecting to blog: %s", redirectURL)
+	redirectURL := fmt.Sprintf("%s://%s/%s", scheme, host, util.GetSiteSlug())
+	util.LogDebug("Redirecting to blog: %s", util.GetSiteSlug())
 	http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)
 }
 
@@ -72,7 +74,7 @@ func proxyRequest(w http.ResponseWriter, r *http.Request, path string) {
 }
 
 func buildRequestURL(r *http.Request) string {
-	requestURL := fmt.Sprintf("%s%s", config.SiteDomain, r.URL.Path)
+	requestURL := fmt.Sprintf("%s%s", util.GetSiteDomain(), r.URL.Path)
 
 	if strings.Contains(requestURL, "notion.site/image/https://") {
 		requestURL = handleImageURL(requestURL)
@@ -81,7 +83,7 @@ func buildRequestURL(r *http.Request) string {
 	if r.URL.RawQuery != "" {
 		requestURL += "?" + r.URL.RawQuery
 	}
-	logDebug("Proxying request to: %s", requestURL)
+	util.LogDebug("Proxying request to: %s", requestURL)
 	return requestURL
 }
 
@@ -130,14 +132,14 @@ func handlePublicPageData(w http.ResponseWriter, resp *http.Response) {
 	reader := getReader(resp)
 	body, err := io.ReadAll(reader)
 	if err != nil {
-		logError("Failed to read response body: %v", err)
+		util.LogError("Failed to read response body: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var data map[string]interface{}
 	if err := json.Unmarshal(body, &data); err != nil {
-		logError("Failed to parse JSON: %v", err)
+		util.LogError("Failed to parse JSON: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -146,7 +148,7 @@ func handlePublicPageData(w http.ResponseWriter, resp *http.Response) {
 
 	modifiedJSON, err := json.Marshal(data)
 	if err != nil {
-		logError("Failed to marshal JSON: %v", err)
+		util.LogError("Failed to marshal JSON: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -169,7 +171,7 @@ func handleHTMLResponse(w http.ResponseWriter, resp *http.Response) {
 	reader := getReader(resp)
 	body, err := io.ReadAll(reader)
 	if err != nil {
-		logError("Failed to read HTML response: %v", err)
+		util.LogError("Failed to read HTML response: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -252,7 +254,7 @@ func injectScript(htmlString string) string {
 			subtree: true,
 			characterData: true
 		});
-	</script>`, config.PageTitle, config.PageDescription)
+	</script>`, util.GetPageTitle(), util.GetPageDescription())
 
 	return strings.Replace(htmlString, "</head>", script+"</head>", 1)
 }
@@ -262,12 +264,12 @@ func sendGzippedResponse(w http.ResponseWriter, resp *http.Response, content str
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	if _, err := gz.Write([]byte(content)); err != nil {
-		logError("Failed to gzip response: %v", err)
+		util.LogError("Failed to gzip response: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if err := gz.Close(); err != nil {
-		logError("Failed to close gzip writer: %v", err)
+		util.LogError("Failed to close gzip writer: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -288,7 +290,7 @@ func getReader(resp *http.Response) io.ReadCloser {
 	if resp.Header.Get("Content-Encoding") == "gzip" {
 		reader, err := gzip.NewReader(resp.Body)
 		if err != nil {
-			logError("Failed to create gzip reader: %v", err)
+			util.LogError("Failed to create gzip reader: %v", err)
 			return resp.Body
 		}
 		return reader

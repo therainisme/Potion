@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"bytes"
@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/therainisme/potion/util"
 )
 
 type URLSet struct {
@@ -35,7 +37,7 @@ func loadDatabasePages(r *http.Request) ([]URL, error) {
 	// TODO: Handle pagination
 	payload := map[string]interface{}{
 		"page": map[string]interface{}{
-			"id": config.SitemapID,
+			"id": util.GetSitemapID(),
 		},
 		"limit":           30,
 		"cursor":          map[string]interface{}{"stack": []interface{}{}},
@@ -49,7 +51,7 @@ func loadDatabasePages(r *http.Request) ([]URL, error) {
 
 	// Create request
 	req, err := http.NewRequest("POST",
-		fmt.Sprintf("%s/api/v3/loadCachedPageChunkV2", config.SiteDomain),
+		fmt.Sprintf("%s/api/v3/loadCachedPageChunkV2", util.GetSiteDomain()),
 		bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %v", err)
@@ -83,7 +85,7 @@ func loadDatabasePages(r *http.Request) ([]URL, error) {
 	var viewID string
 	if recordMap, ok := result["recordMap"].(map[string]interface{}); ok {
 		if block, ok := recordMap["block"].(map[string]interface{}); ok {
-			if blockValue, ok := block[config.SitemapID].(map[string]interface{}); ok {
+			if blockValue, ok := block[util.GetSitemapID()].(map[string]interface{}); ok {
 				if value, ok := blockValue["value"].(map[string]interface{}); ok {
 					if viewIds, ok := value["view_ids"].([]interface{}); ok && len(viewIds) > 0 {
 						viewID = viewIds[0].(string)
@@ -136,7 +138,7 @@ func handleSitemap(w http.ResponseWriter, r *http.Request) {
 		Xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URLs: []URL{
 			{
-				Loc:        fmt.Sprintf("%s/%s", baseURL, config.SiteSlug),
+				Loc:        fmt.Sprintf("%s/%s", baseURL, util.GetSiteSlug()),
 				LastMod:    time.Now().Format("2006-01-02"),
 				ChangeFreq: "daily",
 				Priority:   1.0,
@@ -148,7 +150,7 @@ func handleSitemap(w http.ResponseWriter, r *http.Request) {
 	if dbUrls, err := loadDatabasePages(r); err == nil {
 		urlset.URLs = append(urlset.URLs, dbUrls...)
 	} else {
-		logError("Failed to load database pages: %v", err)
+		util.LogError("Failed to load database pages: %v", err)
 	}
 
 	w.Header().Set("Content-Type", "application/xml")
@@ -157,7 +159,7 @@ func handleSitemap(w http.ResponseWriter, r *http.Request) {
 	encoder := xml.NewEncoder(w)
 	encoder.Indent("", "  ")
 	if err := encoder.Encode(urlset); err != nil {
-		logError("Failed to encode sitemap: %v", err)
+		util.LogError("Failed to encode sitemap: %v", err)
 		http.Error(w, "Failed to generate sitemap", http.StatusInternalServerError)
 		return
 	}

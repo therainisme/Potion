@@ -5,6 +5,7 @@ A lightweight proxy tool for customizing Notion pages, making your Notion blog m
 1. Access Notion pages through your own server, with support for custom domains
 2. Customize page title and description
 3. Support sitemap.xml
+4. One-click deployment to Vercel
 
 ## Quick Start
 
@@ -31,6 +32,26 @@ PAGE_DESCRIPTION=Your custom description
 ```bash
 go run .
 ```
+
+## Deploy to Vercel
+
+1. Fork this repository
+
+2. Import your forked repository to Vercel
+
+3. Add environment variables in Vercel project settings:
+
+```env
+SITE_DOMAIN=https://your-blog.notion.site
+SITE_SLUG=your-page-slug
+PAGE_TITLE=Your custom title
+SITEMAP_ID=Your blog database id
+PAGE_DESCRIPTION=Your custom description
+```
+
+4. Deploy and enjoy!
+
+Note: The `PORT` environment variable will be ignored on Vercel, as Vercel automatically assigns a port.
 
 ## Docker Deployment
 
