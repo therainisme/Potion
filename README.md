@@ -25,6 +25,7 @@ SITE_SLUG=your-page-slug
 PAGE_TITLE=Your custom title
 SITEMAP_ID=Your blog database id
 PAGE_DESCRIPTION=Your custom description
+GOOGLE_SITE_VERIFICATION=Your Google Search Console verification code
 ```
 
 3. Run:
@@ -47,6 +48,7 @@ SITE_SLUG=your-page-slug
 PAGE_TITLE=Your custom title
 SITEMAP_ID=Your blog database id
 PAGE_DESCRIPTION=Your custom description
+GOOGLE_SITE_VERIFICATION=Your Google Search Console verification code
 ```
 
 4. Deploy and enjoy!
@@ -69,6 +71,7 @@ services:
       - PAGE_TITLE=Your custom title
       - SITEMAP_ID=Your blog database id
       - PAGE_DESCRIPTION=Your custom description
+      - GOOGLE_SITE_VERIFICATION=Your Google Search Console verification code
     # Or use .env file
     # volumes:
     #   - .env:/app/.env
@@ -92,6 +95,7 @@ docker run -d \
   -e PAGE_TITLE="Your custom title" \
   -e SITEMAP_ID="Your blog database id" \
   -e PAGE_DESCRIPTION="Your custom description" \
+  -e GOOGLE_SITE_VERIFICATION="Your Google Search Console verification code" \
   therainisme/potion
 
 # Or run with .env file
@@ -116,4 +120,5 @@ Visit my blog to see Potion in action: https://blog.therainisme.com
 | PAGE_TITLE | Custom page title | My Blog |
 | SITEMAP_ID (optional) | Your blog database id | xxxxxxxxx |
 | PAGE_DESCRIPTION | Custom page description | Welcome to my blog |
+| GOOGLE_SITE_VERIFICATION (optional) | Your Google Search Console verification code | xxxxxxxxxxxxx |
 

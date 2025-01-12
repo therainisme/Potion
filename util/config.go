@@ -8,12 +8,13 @@ import (
 )
 
 type Config struct {
-	Port            string
-	SiteDomain      string
-	SiteSlug        string
-	PageTitle       string
-	PageDescription string
-	SitemapID       string
+	Port                   string
+	SiteDomain             string
+	SiteSlug               string
+	PageTitle              string
+	PageDescription        string
+	SitemapID              string
+	GoogleSiteVerification string
 }
 
 var config Config
@@ -23,12 +24,13 @@ func setConfig(c Config) {
 }
 
 // 导出配置字段的 getter
-func GetPort() string            { return config.Port }
-func GetSiteDomain() string      { return config.SiteDomain }
-func GetSiteSlug() string        { return config.SiteSlug }
-func GetPageTitle() string       { return config.PageTitle }
-func GetPageDescription() string { return config.PageDescription }
-func GetSitemapID() string       { return config.SitemapID }
+func GetPort() string                   { return config.Port }
+func GetSiteDomain() string             { return config.SiteDomain }
+func GetSiteSlug() string               { return config.SiteSlug }
+func GetPageTitle() string              { return config.PageTitle }
+func GetPageDescription() string        { return config.PageDescription }
+func GetSitemapID() string              { return config.SitemapID }
+func GetGoogleSiteVerification() string { return config.GoogleSiteVerification }
 
 var (
 	requiredEnvVars = []string{
@@ -60,12 +62,13 @@ func init() {
 
 	// Load configuration
 	setConfig(Config{
-		Port:            os.Getenv("PORT"),
-		SiteDomain:      os.Getenv("SITE_DOMAIN"),
-		SiteSlug:        os.Getenv("SITE_SLUG"),
-		PageTitle:       os.Getenv("PAGE_TITLE"),
-		PageDescription: os.Getenv("PAGE_DESCRIPTION"),
-		SitemapID:       os.Getenv("SITEMAP_ID"),
+		Port:                   os.Getenv("PORT"),
+		SiteDomain:             os.Getenv("SITE_DOMAIN"),
+		SiteSlug:               os.Getenv("SITE_SLUG"),
+		PageTitle:              os.Getenv("PAGE_TITLE"),
+		PageDescription:        os.Getenv("PAGE_DESCRIPTION"),
+		SitemapID:              os.Getenv("SITEMAP_ID"),
+		GoogleSiteVerification: os.Getenv("GOOGLE_SITE_VERIFICATION"),
 	})
 
 	// Log configuration
@@ -76,4 +79,5 @@ func init() {
 	LogInfo("  Page Title: %s", GetPageTitle())
 	LogInfo("  Page Description: %s", GetPageDescription())
 	LogInfo("  Sitemap ID: %s", GetSitemapID())
+	LogInfo("  Google Site Verification: %s", GetGoogleSiteVerification())
 }

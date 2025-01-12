@@ -188,6 +188,7 @@ func handleHTMLResponse(w http.ResponseWriter, resp *http.Response) {
 
 func injectScript(htmlString string) string {
 	script := fmt.Sprintf(`
+	<meta name="google-site-verification" content="%s" />
 	<style>
 		/* Hide the "More actions" button and the button after it */
 		.notion-topbar [role="button"][tabindex="0"][aria-label],
@@ -254,7 +255,7 @@ func injectScript(htmlString string) string {
 			subtree: true,
 			characterData: true
 		});
-	</script>`, util.GetPageTitle(), util.GetPageDescription())
+	</script>`, util.GetGoogleSiteVerification(), util.GetPageTitle(), util.GetPageDescription())
 
 	return strings.Replace(htmlString, "</head>", script+"</head>", 1)
 }
