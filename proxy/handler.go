@@ -22,6 +22,8 @@ func HandleRequest(w http.ResponseWriter, r *http.Request) {
 		handleRootPath(w, r)
 	case "sitemap.xml":
 		handleSitemap(w, r)
+	case "robots.txt":
+		handleRobots(w, r)
 	default:
 		proxyRequest(w, r, path)
 	}
@@ -297,4 +299,21 @@ func getReader(resp *http.Response) io.ReadCloser {
 		return reader
 	}
 	return resp.Body
+}
+
+// handleRobots handles the robots.txt request
+func handleRobots(w http.ResponseWriter, r *http.Request) {
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+	host := r.Host
+
+	content := fmt.Sprintf(`User-agent: *
+Allow: /
+
+Sitemap: %s://%s/sitemap.xml`, scheme, host)
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(content))
 }
